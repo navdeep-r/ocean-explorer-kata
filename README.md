@@ -48,7 +48,7 @@ Moving far beyond standard corporate dashboards, the UI was explicitly redesigne
 * **Usability**: Real-time polling mechanics subtly report server system health status strings, providing fluid "offline/ready" UI badges rather than disruptive network crash alerts.
 
 ## AI Engineering & Usage
-Advanced AI models were strategically integrated throughout the engineering lifecycle—acting directly as a specialized co-pilot instead of a brute-force autocompleter.
+Advanced AI models were strategically integrated throughout the engineering lifecycle—acting directly as a specialized co-pilot instead of a brute-force autocomplter.
 * **UI Experimentation & Prototyping**: AI generated extreme leverage during intensive CSS/UI iteration. Canvas physics rendering, complex glassmorphic filters, tailwind arbitrary scaling hooks, and structural layout scaffolding were shaped deeply alongside AI feedback to bypass tedious visual math and focus strictly on high-level UX flows.
 * **Prompt Engineering Strategy**: Core technical inquiries were stringently bounded. When solving underlying `Probe`/`Grid` logic, prompts strictly sought pure functional behavior. I deliberately maintained absolute developer agency when routing overarching API integration and state-lifting flows.
 * **Critical Review & Refactoring**: Generative suggestions were continuously modified and criticized. Blind spots regarding coordinate indexing flaws or rigid DOM bounding limitations were caught via active developer oversight, refactoring initial AI iterations until they met exact structural robustness requirements.
