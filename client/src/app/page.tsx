@@ -170,19 +170,6 @@ export default function Home() {
             gridWidth={gridWidth}
             gridHeight={gridHeight}
           />
-
-          {/* Keyboard Shortcuts Card */}
-          {isConfigured && (
-            <div className="glass-panel rounded-xl p-3 border border-cyan-glow/10 fade-in shrink-0">
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">Keyboard Shortcuts</p>
-              <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[11px]">
-                <span className="text-muted-foreground">W / ↑</span><span className="text-cyan-glow">Forward</span>
-                <span className="text-muted-foreground">S / ↓</span><span className="text-cyan-glow">Backward</span>
-                <span className="text-muted-foreground">A / ←</span><span className="text-cyan-glow">Turn Left</span>
-                <span className="text-muted-foreground">D / →</span><span className="text-cyan-glow">Turn Right</span>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Center Panel — grid fills available space */}

@@ -24,7 +24,7 @@ const directionNames: Record<string, string> = {
   W: "West",
 };
 
-type Tab = "stats" | "path" | "errors";
+type Tab = "stats" | "history" | "path" | "errors";
 
 export default function SummaryPanel({
   visitedCoordinates,
@@ -73,6 +73,7 @@ export default function SummaryPanel({
 
   const tabs: { key: Tab; label: string; count?: number }[] = [
     { key: "stats", label: "Summary" },
+    { key: "history", label: "History", count: commandHistory.length },
     { key: "path", label: "Path", count: visitedCoordinates.length },
     { key: "errors", label: "Blocked", count: failCount },
   ];
@@ -101,6 +102,12 @@ export default function SummaryPanel({
                 <span className="text-amber-warn/70">{failCount} blocked</span>
               </>
             )}
+            {commandHistory.length > 0 && (
+              <>
+                <span className="text-muted-foreground">·</span>
+                <span className="text-cyan-glow/70">{commandHistory.length} cmds</span>
+              </>
+            )}
           </div>
 
           <Button
@@ -108,6 +115,7 @@ export default function SummaryPanel({
             size="sm"
             className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground shrink-0"
             onClick={(e) => { e.stopPropagation(); exportSummary(); }}
+            title="Export JSON"
           >
             <svg viewBox="0 0 20 20" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M6 10l4 4 4-4M10 14V3M3 17h14" />
@@ -175,6 +183,50 @@ export default function SummaryPanel({
                 </div>
               )}
             </div>
+          )}
+
+          {/* History tab — full-width command log */}
+          {activeTab === "history" && (
+            <ScrollArea className="h-48">
+              {commandHistory.length === 0 ? (
+                <p className="text-xs text-muted-foreground text-center py-6">No commands executed yet</p>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-1">
+                  {commandHistory.map((cmd, i) => (
+                    <div
+                      key={i}
+                      className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs ${
+                        cmd.success
+                          ? "bg-emerald-ok/5 border border-emerald-ok/10"
+                          : "bg-red-alert/5 border border-red-alert/10"
+                      }`}
+                    >
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] w-5 h-5 p-0 flex items-center justify-center shrink-0 ${
+                          cmd.success
+                            ? "border-emerald-ok/30 text-emerald-ok"
+                            : "border-red-alert/30 text-red-alert"
+                        }`}
+                      >
+                        {cmd.command}
+                      </Badge>
+                      <span className="flex-1 text-muted-foreground truncate">
+                        {cmd.message}
+                      </span>
+                      {cmd.position && (
+                        <span className="text-[10px] text-cyan-glow/50 font-mono shrink-0">
+                          ({cmd.position.x},{cmd.position.y})
+                        </span>
+                      )}
+                      <span className="text-[10px] text-muted-foreground/40 font-mono shrink-0">
+                        #{i + 1}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
           )}
 
           {/* Path tab */}

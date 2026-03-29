@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import type { Coordinate, CommandResult } from "@/lib/api";
 
@@ -39,7 +37,6 @@ export default function CommandPanel({
   status,
 }: CommandPanelProps) {
   const [batchInput, setBatchInput] = useState("");
-  const [historyOpen, setHistoryOpen] = useState(true);
 
   const handleBatch = () => {
     const cmds = batchInput
@@ -53,9 +50,9 @@ export default function CommandPanel({
   };
 
   return (
-    <div className="flex flex-col gap-3 min-h-0 overflow-y-auto scroll-thin">
+    <div className="flex flex-col gap-3">
       {/* Probe Telemetry */}
-      <Card className="glass-panel border-cyan-glow/10 shrink-0">
+      <Card className="glass-panel border-cyan-glow/10">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold text-cyan-glow flex items-center gap-2">
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
@@ -105,7 +102,7 @@ export default function CommandPanel({
       </Card>
 
       {/* Controls */}
-      <Card className="glass-panel border-cyan-glow/10 shrink-0">
+      <Card className="glass-panel border-cyan-glow/10">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold text-cyan-glow flex items-center gap-2">
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
@@ -186,76 +183,20 @@ export default function CommandPanel({
               </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Command History — collapsible */}
-      <Card className="glass-panel border-cyan-glow/10 flex-1 min-h-0 flex flex-col">
-        <CardHeader className="pb-2 shrink-0">
-          <CardTitle
-            className="text-sm font-semibold text-cyan-glow flex items-center gap-2 cursor-pointer select-none"
-            onClick={() => setHistoryOpen(!historyOpen)}
-          >
-            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 6v6l4 2" />
-            </svg>
-            Command History
-            {commandHistory.length > 0 && (
-              <Badge variant="outline" className="text-[10px] ml-auto border-cyan-glow/20 text-muted-foreground">
-                {commandHistory.length}
-              </Badge>
-            )}
-            <svg
-              viewBox="0 0 20 20"
-              className={`w-3 h-3 text-muted-foreground transition-transform ${historyOpen ? "rotate-180" : ""}`}
-              fill="currentColor"
-            >
-              <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
-            </svg>
-          </CardTitle>
-        </CardHeader>
-        {historyOpen && (
-          <CardContent className="flex-1 min-h-0">
-            <ScrollArea className="h-full max-h-[200px]">
-              {commandHistory.length === 0 ? (
-                <p className="text-xs text-muted-foreground text-center py-4">
-                  No commands executed yet
-                </p>
-              ) : (
-                <div className="space-y-1">
-                  {commandHistory.map((cmd, i) => (
-                    <div
-                      key={i}
-                      className={`flex items-center gap-2 px-2 py-1 rounded-md text-xs ${
-                        cmd.success
-                          ? "bg-emerald-ok/5 border border-emerald-ok/10"
-                          : "bg-red-alert/5 border border-red-alert/10"
-                      }`}
-                    >
-                      <Badge
-                        variant="outline"
-                        className={`text-[10px] w-5 h-5 p-0 flex items-center justify-center shrink-0 ${
-                          cmd.success
-                            ? "border-emerald-ok/30 text-emerald-ok"
-                            : "border-red-alert/30 text-red-alert"
-                        }`}
-                      >
-                        {cmd.command}
-                      </Badge>
-                      <span className="flex-1 text-muted-foreground truncate">
-                        {cmd.message}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground/60 font-mono shrink-0">
-                        #{i + 1}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </ScrollArea>
-          </CardContent>
-        )}
+          {/* Keyboard hints */}
+          {isConfigured && (
+            <div className="pt-1 border-t border-cyan-glow/8">
+              <p className="text-[9px] text-muted-foreground uppercase tracking-wider mb-1.5">Keyboard</p>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px]">
+                <span className="text-muted-foreground">W / ↑</span><span className="text-cyan-glow/70">Forward</span>
+                <span className="text-muted-foreground">S / ↓</span><span className="text-cyan-glow/70">Backward</span>
+                <span className="text-muted-foreground">A / ←</span><span className="text-cyan-glow/70">Turn Left</span>
+                <span className="text-muted-foreground">D / →</span><span className="text-cyan-glow/70">Turn Right</span>
+              </div>
+            </div>
+          )}
+        </CardContent>
       </Card>
     </div>
   );
