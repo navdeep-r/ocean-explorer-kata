@@ -6,6 +6,7 @@ import SetupPanel from "@/components/SetupPanel";
 import OceanGrid from "@/components/OceanGrid";
 import CommandPanel from "@/components/CommandPanel";
 import SummaryPanel from "@/components/SummaryPanel";
+import MatrixBackground from "@/components/MatrixBackground";
 import { api, type ProbeState, type Coordinate, type CommandResult, type GridSetupPayload } from "@/lib/api";
 
 export default function Home() {
@@ -146,9 +147,14 @@ export default function Home() {
   }, [isConfigured, handleStep]);
 
   return (
-    <div className="h-screen flex flex-col gap-3 p-3 max-w-[1600px] mx-auto">
-      {/* Header — fixed height */}
-      <Header systemStatus={systemStatus} />
+    <>
+      {/* Animated canvas background — z-0, behind everything */}
+      <MatrixBackground />
+
+      {/* UI layer — z-10, floats above canvas */}
+      <div className="h-screen flex flex-col gap-3 p-3 max-w-[1600px] mx-auto relative" style={{ zIndex: 1 }}>
+        {/* Header — fixed height */}
+        <Header systemStatus={systemStatus} />
 
       {/* API Error Banner */}
       {apiError && (
@@ -207,6 +213,7 @@ export default function Home() {
         commandHistory={commandHistory}
         isConfigured={isConfigured}
       />
-    </div>
+      </div>
+    </>
   );
 }
