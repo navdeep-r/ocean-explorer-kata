@@ -146,23 +146,23 @@ export default function Home() {
   }, [isConfigured, handleStep]);
 
   return (
-    <div className="min-h-screen flex flex-col gap-3 p-4 max-w-[1440px] mx-auto">
-      {/* Header */}
+    <div className="h-screen flex flex-col gap-3 p-3 max-w-[1600px] mx-auto">
+      {/* Header — fixed height */}
       <Header systemStatus={systemStatus} />
 
       {/* API Error Banner */}
       {apiError && (
-        <div className="fade-in px-4 py-2 rounded-lg bg-red-alert/10 border border-red-alert/20 text-red-alert text-xs flex items-center gap-2">
+        <div className="shrink-0 fade-in px-4 py-2 rounded-lg bg-red-alert/10 border border-red-alert/20 text-red-alert text-xs flex items-center gap-2">
           <span>⚠</span>
-          <span>{apiError}</span>
-          <button className="ml-auto text-red-alert/60 hover:text-red-alert" onClick={() => setApiError(null)}>✕</button>
+          <span className="flex-1">{apiError}</span>
+          <button className="text-red-alert/60 hover:text-red-alert" onClick={() => setApiError(null)}>✕</button>
         </div>
       )}
 
-      {/* Main 3-Column Layout */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[280px_1fr_300px] gap-3">
-        {/* Left Panel */}
-        <div className="space-y-3">
+      {/* Main 3-Column Layout — fills remaining height */}
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[280px_1fr_300px] gap-3">
+        {/* Left Panel — scrollable config */}
+        <div className="flex flex-col gap-3 min-h-0 overflow-y-auto scroll-thin">
           <SetupPanel
             onSetup={handleSetup}
             onReset={handleReset}
@@ -173,9 +173,9 @@ export default function Home() {
 
           {/* Keyboard Shortcuts Card */}
           {isConfigured && (
-            <div className="glass-panel rounded-xl p-3 border border-cyan-glow/10 fade-in">
+            <div className="glass-panel rounded-xl p-3 border border-cyan-glow/10 fade-in shrink-0">
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">Keyboard Shortcuts</p>
-              <div className="grid grid-cols-2 gap-1 text-[11px]">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[11px]">
                 <span className="text-muted-foreground">W / ↑</span><span className="text-cyan-glow">Forward</span>
                 <span className="text-muted-foreground">S / ↓</span><span className="text-cyan-glow">Backward</span>
                 <span className="text-muted-foreground">A / ←</span><span className="text-cyan-glow">Turn Left</span>
@@ -185,7 +185,7 @@ export default function Home() {
           )}
         </div>
 
-        {/* Center Panel */}
+        {/* Center Panel — grid fills available space */}
         <OceanGrid
           width={gridWidth}
           height={gridHeight}
@@ -196,7 +196,7 @@ export default function Home() {
           isConfigured={isConfigured}
         />
 
-        {/* Right Panel */}
+        {/* Right Panel — controls with internal scroll */}
         <CommandPanel
           onBatchExecute={handleBatchExecute}
           onStep={handleStep}
@@ -210,7 +210,7 @@ export default function Home() {
         />
       </div>
 
-      {/* Bottom Summary */}
+      {/* Bottom Summary — collapsible bar */}
       <SummaryPanel
         visitedCoordinates={visitedCoordinates}
         totalSteps={totalSteps}

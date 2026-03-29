@@ -107,7 +107,9 @@
     background-image:
       radial-gradient(ellipse at 20% 50%, rgba(0, 145, 205, 0.06) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 20%, rgba(34, 211, 238, 0.04) 0%, transparent 50%);
-    min-height: 100vh;
+    /* Lock viewport — no page-level scroll */
+    height: 100vh;
+    overflow: hidden;
   }
   html {
     @apply font-sans;
@@ -115,23 +117,30 @@
 }
 
 @layer utilities {
+  /* Glass panel — standard card surface */
   .glass-panel {
     background: rgba(13, 27, 42, 0.7);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(34, 211, 238, 0.1);
   }
+
+  /* Glow accents */
   .glow-cyan {
     box-shadow: 0 0 20px rgba(34, 211, 238, 0.15), 0 0 60px rgba(34, 211, 238, 0.05);
   }
   .glow-text-cyan {
     text-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
   }
+
+  /* Grid cells */
   .grid-cell {
     transition: all 0.2s ease;
   }
   .grid-cell:hover {
     background: rgba(34, 211, 238, 0.08);
   }
+
+  /* Probe pulsing glow */
   .probe-pulse {
     animation: probePulse 2s ease-in-out infinite;
   }
@@ -139,11 +148,36 @@
     0%, 100% { box-shadow: 0 0 8px rgba(34, 211, 238, 0.4); }
     50% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.8), 0 0 40px rgba(34, 211, 238, 0.3); }
   }
+
+  /* Fade-in entrance */
   .fade-in {
     animation: fadeIn 0.3s ease-out;
   }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scrollbar styling for internal-scroll panels */
+  .scroll-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scroll-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background: rgba(34, 211, 238, 0.12);
+    border-radius: 4px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(34, 211, 238, 0.25);
+  }
+
+  /* Subtle grid-line background for the map area */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(34, 211, 238, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34, 211, 238, 0.025) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 }

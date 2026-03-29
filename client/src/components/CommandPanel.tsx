@@ -20,13 +20,6 @@ interface CommandPanelProps {
   status: string;
 }
 
-const COMMAND_BUTTONS = [
-  { cmd: "F", label: "Forward", icon: "▲", shortcut: "W" },
-  { cmd: "L", label: "Left", icon: "◀", shortcut: "A" },
-  { cmd: "B", label: "Backward", icon: "▼", shortcut: "S" },
-  { cmd: "R", label: "Right", icon: "▶", shortcut: "D" },
-];
-
 const directionNames: Record<string, string> = {
   N: "North",
   E: "East",
@@ -46,6 +39,7 @@ export default function CommandPanel({
   status,
 }: CommandPanelProps) {
   const [batchInput, setBatchInput] = useState("");
+  const [historyOpen, setHistoryOpen] = useState(true);
 
   const handleBatch = () => {
     const cmds = batchInput
@@ -59,9 +53,9 @@ export default function CommandPanel({
   };
 
   return (
-    <div className="space-y-3">
-      {/* Live State */}
-      <Card className="glass-panel border-cyan-glow/10">
+    <div className="flex flex-col gap-3 min-h-0 overflow-y-auto scroll-thin">
+      {/* Probe Telemetry */}
+      <Card className="glass-panel border-cyan-glow/10 shrink-0">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold text-cyan-glow flex items-center gap-2">
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
@@ -88,22 +82,22 @@ export default function CommandPanel({
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                <div className="bg-background/50 rounded-md p-2 text-center">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Steps</p>
+                <div className="bg-background/50 rounded-md p-1.5 text-center">
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Steps</p>
                   <p className="text-sm font-mono text-foreground">{totalSteps}</p>
                 </div>
-                <div className="bg-background/50 rounded-md p-2 text-center">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Blocked</p>
+                <div className="bg-background/50 rounded-md p-1.5 text-center">
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Blocked</p>
                   <p className="text-sm font-mono text-amber-warn">{invalidMoveCount}</p>
                 </div>
-                <div className="bg-background/50 rounded-md p-2 text-center">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Status</p>
+                <div className="bg-background/50 rounded-md p-1.5 text-center">
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Status</p>
                   <p className="text-sm font-mono text-emerald-ok capitalize">{status}</p>
                 </div>
               </div>
             </>
           ) : (
-            <p className="text-xs text-muted-foreground text-center py-4">
+            <p className="text-xs text-muted-foreground text-center py-3">
               Awaiting grid initialization…
             </p>
           )}
@@ -111,7 +105,7 @@ export default function CommandPanel({
       </Card>
 
       {/* Controls */}
-      <Card className="glass-panel border-cyan-glow/10">
+      <Card className="glass-panel border-cyan-glow/10 shrink-0">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold text-cyan-glow flex items-center gap-2">
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
@@ -121,7 +115,7 @@ export default function CommandPanel({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {/* Step Buttons */}
+          {/* D-pad */}
           <div className="grid grid-cols-3 gap-1.5">
             <div />
             <Button
@@ -129,7 +123,7 @@ export default function CommandPanel({
               size="sm"
               disabled={!isConfigured}
               onClick={() => onStep("F")}
-              className="h-10 text-xs border-cyan-glow/20 hover:bg-cyan-glow/10 text-cyan-glow"
+              className="h-9 text-xs border-cyan-glow/20 hover:bg-cyan-glow/10 text-cyan-glow"
             >
               ▲ Fwd
             </Button>
@@ -139,7 +133,7 @@ export default function CommandPanel({
               size="sm"
               disabled={!isConfigured}
               onClick={() => onStep("L")}
-              className="h-10 text-xs border-cyan-glow/20 hover:bg-cyan-glow/10 text-cyan-glow"
+              className="h-9 text-xs border-cyan-glow/20 hover:bg-cyan-glow/10 text-cyan-glow"
             >
               ◀ Left
             </Button>
@@ -148,7 +142,7 @@ export default function CommandPanel({
               size="sm"
               disabled={!isConfigured}
               onClick={() => onStep("B")}
-              className="h-10 text-xs border-cyan-glow/20 hover:bg-cyan-glow/10 text-cyan-glow"
+              className="h-9 text-xs border-cyan-glow/20 hover:bg-cyan-glow/10 text-cyan-glow"
             >
               ▼ Back
             </Button>
@@ -157,7 +151,7 @@ export default function CommandPanel({
               size="sm"
               disabled={!isConfigured}
               onClick={() => onStep("R")}
-              className="h-10 text-xs border-cyan-glow/20 hover:bg-cyan-glow/10 text-cyan-glow"
+              className="h-9 text-xs border-cyan-glow/20 hover:bg-cyan-glow/10 text-cyan-glow"
             >
               Right ▶
             </Button>
@@ -176,6 +170,7 @@ export default function CommandPanel({
                 type="text"
                 value={batchInput}
                 onChange={(e) => setBatchInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleBatch()}
                 placeholder="e.g. FFRFFLB"
                 disabled={!isConfigured}
                 className="flex-1 h-8 text-sm bg-background/50 border border-cyan-glow/15 rounded-md px-2 text-foreground placeholder:text-muted-foreground/50 focus:border-cyan-glow/40 focus:outline-none disabled:opacity-50"
@@ -194,10 +189,13 @@ export default function CommandPanel({
         </CardContent>
       </Card>
 
-      {/* Command History */}
-      <Card className="glass-panel border-cyan-glow/10">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-cyan-glow flex items-center gap-2">
+      {/* Command History — collapsible */}
+      <Card className="glass-panel border-cyan-glow/10 flex-1 min-h-0 flex flex-col">
+        <CardHeader className="pb-2 shrink-0">
+          <CardTitle
+            className="text-sm font-semibold text-cyan-glow flex items-center gap-2 cursor-pointer select-none"
+            onClick={() => setHistoryOpen(!historyOpen)}
+          >
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 6v6l4 2" />
@@ -208,47 +206,56 @@ export default function CommandPanel({
                 {commandHistory.length}
               </Badge>
             )}
+            <svg
+              viewBox="0 0 20 20"
+              className={`w-3 h-3 text-muted-foreground transition-transform ${historyOpen ? "rotate-180" : ""}`}
+              fill="currentColor"
+            >
+              <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+            </svg>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-48">
-            {commandHistory.length === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-6">
-                No commands executed yet
-              </p>
-            ) : (
-              <div className="space-y-1">
-                {commandHistory.map((cmd, i) => (
-                  <div
-                    key={i}
-                    className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-xs fade-in ${
-                      cmd.success
-                        ? "bg-emerald-ok/5 border border-emerald-ok/10"
-                        : "bg-red-alert/5 border border-red-alert/10"
-                    }`}
-                  >
-                    <Badge
-                      variant="outline"
-                      className={`text-[10px] w-5 h-5 p-0 flex items-center justify-center ${
+        {historyOpen && (
+          <CardContent className="flex-1 min-h-0">
+            <ScrollArea className="h-full max-h-[200px]">
+              {commandHistory.length === 0 ? (
+                <p className="text-xs text-muted-foreground text-center py-4">
+                  No commands executed yet
+                </p>
+              ) : (
+                <div className="space-y-1">
+                  {commandHistory.map((cmd, i) => (
+                    <div
+                      key={i}
+                      className={`flex items-center gap-2 px-2 py-1 rounded-md text-xs ${
                         cmd.success
-                          ? "border-emerald-ok/30 text-emerald-ok"
-                          : "border-red-alert/30 text-red-alert"
+                          ? "bg-emerald-ok/5 border border-emerald-ok/10"
+                          : "bg-red-alert/5 border border-red-alert/10"
                       }`}
                     >
-                      {cmd.command}
-                    </Badge>
-                    <span className="flex-1 text-muted-foreground truncate">
-                      {cmd.message}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground/60 font-mono">
-                      #{i + 1}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </ScrollArea>
-        </CardContent>
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] w-5 h-5 p-0 flex items-center justify-center shrink-0 ${
+                          cmd.success
+                            ? "border-emerald-ok/30 text-emerald-ok"
+                            : "border-red-alert/30 text-red-alert"
+                        }`}
+                      >
+                        {cmd.command}
+                      </Badge>
+                      <span className="flex-1 text-muted-foreground truncate">
+                        {cmd.message}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground/60 font-mono shrink-0">
+                        #{i + 1}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
+          </CardContent>
+        )}
       </Card>
     </div>
   );
